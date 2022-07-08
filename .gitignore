@@ -1,0 +1,23 @@
+## Temp Files
+*.swp
+todo.txt
+
+## User Specific Files
+*.user
+
+## Build
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Pp]ublish/
+[Pp]roperties/
+
+# Visual Studio Files
+.vs/
+
+## Packages
+**/packages/*
+
+## Keys
+*.pfx
