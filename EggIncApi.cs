@@ -8,12 +8,13 @@ public class EggIncApi
 {
     private const int CLIENTVERSION = 40;
 
-    public static async Task<ContractCoopStatusResponse> GetCoopStatus(string contractId, string coopId)
+    public static async Task<ContractCoopStatusResponse> GetCoopStatus(string contractId, string coopId, string userId)
     {
         ContractCoopStatusRequest coopStatusRequest = new ()
         {
             ContractIdentifier = contractId,
             CoopIdentifier = coopId,
+            UserId = userId,
         };
 
         return await MakeEggIncApiRequest("coop_status", coopStatusRequest, ContractCoopStatusResponse.Parser.ParseFrom);

@@ -42,17 +42,19 @@ foreach (string contract in coops.Keys)
 
         try
         {
-            coopStatus = await EggIncApi.EggIncApi.GetCoopStatus(contract, coop);
+            coopStatus = await EggIncApi.EggIncApi.GetCoopStatus(contract, coop, Config.EggIncID);
         }
         catch
         {
             Logger.Error("Could not get Coop Status for " + contract + "::" + coop);
+            indent -= 2;
             continue;
         }
 
         if (!coopStatus.HasCreatorId)
         {
             Logger.Error("Could not get valid Coop Status for " + contract + "::" + coop);
+            indent -= 2;
             continue;
         }
 

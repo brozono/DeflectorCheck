@@ -12,6 +12,7 @@
         private static List<string> groupMembers;
         private static Dictionary<string, string> fuzzyMappings;
         private static string groupName;
+        private static string eggIncID;
 
         public static Dictionary<string, List<string>> Coops
         {
@@ -29,6 +30,11 @@
         public static string GroupName
         {
             get { return groupName; }
+        }
+
+        public static string EggIncID
+        {
+            get { return eggIncID; }
         }
 
         public static string GetConfigFileName()
@@ -68,6 +74,7 @@
                     groupMembers = configData.GroupMembers;
                     fuzzyMappings = configData.FuzzyMappings;
                     groupName = configData.GroupName;
+                    eggIncID = configData.EggIncID;
                 }
                 catch
                 {
@@ -90,6 +97,8 @@
             public Dictionary<string, string> FuzzyMappings { get; set; }
 
             public string GroupName { get; set; }
+
+            public string EggIncID { get; set; }
         }
     }
 }
