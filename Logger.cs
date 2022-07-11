@@ -29,7 +29,7 @@
                 OpenFileCacheTimeout = 30,
                 AutoFlush = false,
                 OpenFileFlushTimeout = 10,
-                ArchiveAboveSize = 1024000,
+                ArchiveAboveSize = 10240000,
                 MaxArchiveFiles = 10,
             };
 
