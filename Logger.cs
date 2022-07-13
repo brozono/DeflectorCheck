@@ -31,6 +31,7 @@
                 OpenFileFlushTimeout = 10,
                 ArchiveAboveSize = 10240000,
                 MaxArchiveFiles = 10,
+                Encoding = System.Text.Encoding.UTF8,
             };
 
             NLog.Common.InternalLogger.LogToConsole = false;

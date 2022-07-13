@@ -44,7 +44,7 @@
 
         public static string GetFuzzyMapping(string value)
         {
-            if (fuzzyMappings.ContainsKey(value))
+            if (fuzzyMappings != null && fuzzyMappings.ContainsKey(value))
             {
                 return fuzzyMappings[value];
             }
@@ -65,7 +65,7 @@
 
             try
             {
-                string fileText = File.ReadAllText(RoamingFull);
+                string fileText = File.ReadAllText(RoamingFull, System.Text.Encoding.UTF8);
 
                 try
                 {

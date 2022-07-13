@@ -1,6 +1,8 @@
 ﻿using DeflectorCheck;
 using Ei;
 
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+
 Logger.ConfigureLogger();
 
 Config.ParseConfig();
@@ -12,7 +14,7 @@ coops = Config.Coops;
 List<string> keys = coops.Keys.ToList<string>();
 foreach (string key in keys)
 {
-    if (key != "quantum-seating-2022" && key != "ten-ten")
+    if (key != "tool-time") // && key != "ten-ten")
     {
         coops.Remove(key);
     }

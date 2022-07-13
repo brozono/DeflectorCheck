@@ -38,7 +38,7 @@
                 {
                     firstContact = await EggIncApi.GetFirstContact(eggId);
 
-                    if (firstContact.HasErrorCode || firstContact.HasErrorMessage)
+                    if (firstContact is null || firstContact.HasErrorCode || firstContact.HasErrorMessage)
                     {
                         firstContact = null;
                         return HasCoop(contract, coop);
