@@ -13,6 +13,7 @@
         private static Dictionary<string, string> fuzzyMappings;
         private static string groupName;
         private static string eggIncID;
+        private static Dictionary<string, List<string>> excludedCoops;
 
         public static Dictionary<string, List<string>> Coops
         {
@@ -52,6 +53,19 @@
             return value;
         }
 
+        public static bool IsExcluded(string contract, string coop)
+        {
+
+            if (excludedCoops != null &&
+                excludedCoops.ContainsKey(contract) &&
+                excludedCoops[contract].Contains(coop))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public static void ParseConfig(string commandLineFileName)
         {
             coops = new Dictionary<string, List<string>>();
@@ -81,6 +95,7 @@
                     fuzzyMappings = configData.FuzzyMappings;
                     groupName = configData.GroupName;
                     eggIncID = configData.EggIncID;
+                    excludedCoops = configData.ExcludedCoops;
                 }
                 catch
                 {
@@ -105,6 +120,8 @@
             public string GroupName { get; set; }
 
             public string EggIncID { get; set; }
+
+            public Dictionary<string, List<string>> ExcludedCoops { get; set; }
         }
     }
 }
