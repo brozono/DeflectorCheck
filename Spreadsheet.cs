@@ -66,6 +66,8 @@
 
             foreach (string contractName in ContractDetail.GetSortedContracts())
             {
+                Logger.Info("Adding " + contractName + " to spreadsheet");
+
                 row = headerRow;
                 col++;
 
