@@ -92,12 +92,16 @@ namespace DeflectorCheck
 
                             string logIdentifierDetail = logIdentifier + "::" + contributor.UserName;
 
-                            BuffHistoryCheck.DeflectorMetrics metrics = BuffHistoryCheck.Check(
-                                contributor,
-                                ContractDetail.GetCoopStartTime(contract, coop),
-                                ContractDetail.GetCoopEndTime(contract, coop, totalEggsPerHour));
-                            GroupData.SetMemberData(logIdentifierDetail, memberMatch, contributor.UserName, contract, metrics);
-                            totalActiveDeflectorSecondsCoop += metrics.ActiveDeflectorSeconds;
+                            if (!Config.IsExcluded(contract, coop))
+                            {
+                                BuffHistoryCheck.DeflectorMetrics metrics = BuffHistoryCheck.Check(
+                                    contributor,
+                                    ContractDetail.GetCoopStartTime(contract, coop),
+                                    ContractDetail.GetCoopEndTime(contract, coop, totalEggsPerHour));
+                                GroupData.SetMemberData(logIdentifierDetail, memberMatch, contributor.UserName, contract, metrics);
+                                totalActiveDeflectorSecondsCoop += metrics.ActiveDeflectorSeconds;
+                            }
+
                             contributorCountCoop++;
                         }
                         else
