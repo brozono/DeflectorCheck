@@ -55,7 +55,6 @@
 
         public static bool IsExcluded(string contract, string coop)
         {
-
             if (excludedCoops != null &&
                 excludedCoops.ContainsKey(contract) &&
                 excludedCoops[contract].Contains(coop))
@@ -97,9 +96,10 @@
                     eggIncID = configData.EggIncID;
                     excludedCoops = configData.ExcludedCoops;
                 }
-                catch
+                catch (Exception e)
                 {
                     Console.WriteLine("ERROR: Malformed config file");
+                    Console.WriteLine(e.Message);
                 }
             }
             catch (Exception e)
