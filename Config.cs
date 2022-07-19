@@ -52,20 +52,26 @@
             return value;
         }
 
-        public static void ParseConfig()
+        public static void ParseConfig(string commandLineFileName)
         {
             coops = new Dictionary<string, List<string>>();
             groupMembers = new List<string>();
+            string fileName = RoamingFull;
 
-            if (!File.Exists(RoamingFull))
+            if (commandLineFileName != string.Empty)
             {
-                Console.WriteLine("ERROR: Expected configuration file at: '" + RoamingFull + "'");
+                fileName = commandLineFileName;
+            }
+
+            if (!File.Exists(fileName))
+            {
+                Console.WriteLine("ERROR: Expected configuration file at: '" + fileName + "'");
                 return;
             }
 
             try
             {
-                string fileText = File.ReadAllText(RoamingFull, System.Text.Encoding.UTF8);
+                string fileText = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
 
                 try
                 {

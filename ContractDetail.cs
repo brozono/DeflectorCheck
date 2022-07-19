@@ -28,7 +28,7 @@
             }
         }
 
-        public static async Task<bool> AddContractCoop(string contract, string coop, string eggId)
+        public static bool AddContractCoop(string contract, string coop, string eggId)
         {
             EggIncFirstContactResponse firstContact;
 
@@ -36,7 +36,9 @@
             {
                 try
                 {
-                    firstContact = await EggIncApi.GetFirstContact(eggId);
+                    var task = EggIncApi.GetFirstContact(eggId);
+                    task.Wait();
+                    firstContact = task.Result;
 
                     if (firstContact is null || firstContact.HasErrorCode || firstContact.HasErrorMessage)
                     {
