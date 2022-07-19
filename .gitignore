@@ -1,6 +1,7 @@
 ## Temp Files
 *.swp
 todo.txt
+[Bb]ackup/
 
 ## User Specific Files
 *.user
