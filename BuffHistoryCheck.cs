@@ -4,6 +4,13 @@
     {
         private static readonly DateTime UnixEpoch = new (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
+        private static DateTime nowUTC;
+
+        public static void SetNowUTC(DateTime now)
+        {
+            nowUTC = now;
+        }
+
         public static DeflectorMetrics Check(Ei.ContractCoopStatusResponse.Types.ContributionInfo contributor, double startTime, double endTime)
         {
             DeflectorMetrics metrics = new ()
@@ -61,7 +68,7 @@
 
         private static double FromDateTime(DateTime date) => (long)(date - UnixEpoch).TotalSeconds;
 
-        private static double ServerTime(double seconds) => FromDateTime(DateTime.UtcNow.AddSeconds(-1 * seconds));
+        private static double ServerTime(double seconds) => FromDateTime(nowUTC.AddSeconds(-1 * seconds));
 
         public struct DeflectorMetrics
         {

@@ -28,6 +28,8 @@ namespace DeflectorCheck
 
             ContractCoopStatusResponse coopStatus;
 
+            ContractDetail.LoadContractFile();
+
             GroupData.AddMembers();
 
             foreach (string contract in coops.Keys)
@@ -134,6 +136,8 @@ namespace DeflectorCheck
             GroupData.CheckData();
             GroupData.Log();
 
+            ContractDetail.SaveContractFile();
+
             Spreadsheet spreadsheet = new ();
             spreadsheet.Create();
 
@@ -143,8 +147,55 @@ namespace DeflectorCheck
 
         private static ContractCoopStatusResponse GetCoop(string contract, string coop, string id)
         {
+            string fileName = Config.GetCoopFolder() + contract + "--" + coop + ".txt";
+
+            if (Directory.Exists(Config.GetCoopFolder()))
+            {
+                if (File.Exists(fileName))
+                {
+                    try
+                    {
+                        string fileText = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+                        var fileData = Newtonsoft.Json.JsonConvert.DeserializeObject<CoopStatusFile>(fileText);
+                        BuffHistoryCheck.SetNowUTC(fileData.Now);
+                        return fileData.Coop;
+                    }
+                    catch
+                    {
+                        Logger.Warn("Failed to load " + contract + "--" + coop + " from file");
+                        File.Delete(fileName);
+
+                        // Will fall through to get via API
+                    }
+                }
+            }
+
             var task = EggIncApi.EggIncApi.GetCoopStatus(contract, coop, id);
             task.Wait();
+            DateTime now = DateTime.UtcNow;
+            BuffHistoryCheck.SetNowUTC(now);
+
+            if (!Directory.Exists(Config.GetCoopFolder()))
+            {
+                Directory.CreateDirectory(Config.GetCoopFolder());
+            }
+
+            try
+            {
+                CoopStatusFile fileData = new ()
+                {
+                    Now = now,
+                    Coop = task.Result,
+                };
+
+                var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(fileData, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(fileName, jsonString);
+            }
+            catch
+            {
+                Logger.Warn("Failed to save " + contract + "--" + coop + " to file");
+            }
+
             return task.Result;
         }
 
@@ -161,6 +212,12 @@ namespace DeflectorCheck
                     }
                 }
             }
+        }
+
+        private struct CoopStatusFile
+        {
+            public DateTime Now;
+            public ContractCoopStatusResponse Coop;
         }
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

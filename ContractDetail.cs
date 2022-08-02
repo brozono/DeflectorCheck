@@ -5,26 +5,45 @@
 
     internal class ContractDetail
     {
-        private static readonly Dictionary<string, ContractData> Contracts = new ();
+        private static Dictionary<string, ContractData> contracts = new ();
+        private static string fileName;
 
-        public static void FindDetail(MyContracts myContracts, string contractName, string coopName)
+        public static void LoadContractFile()
         {
-            foreach (LocalContract localContract in myContracts.Contracts)
+            fileName = Config.GetCoopFolder() + Config.GroupName + "_ContractDetail.txt";
+
+            if (Directory.Exists(Config.GetCoopFolder()))
             {
-                if (localContract.Contract.Identifier == contractName && localContract.CoopIdentifier == coopName)
+                if (File.Exists(fileName))
                 {
-                    AddDetail(localContract, contractName, coopName);
-                    return;
+                    try
+                    {
+                        string fileText = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+                        contracts = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, ContractData>>(fileText);
+                    }
+                    catch
+                    {
+                        Logger.Warn("Failed to load Contract Detail from file");
+                    }
                 }
             }
+        }
 
-            foreach (LocalContract localContract in myContracts.Archive)
+        public static void SaveContractFile()
+        {
+            if (!Directory.Exists(Config.GetCoopFolder()))
             {
-                if (localContract.Contract.Identifier == contractName && localContract.CoopIdentifier == coopName)
-                {
-                    AddDetail(localContract, contractName, coopName);
-                    return;
-                }
+                Directory.CreateDirectory(Config.GetCoopFolder());
+            }
+
+            try
+            {
+                var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(contracts, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(fileName, jsonString);
+            }
+            catch
+            {
+                Logger.Warn("Failed to save contract detail to file");
             }
         }
 
@@ -60,11 +79,11 @@
 
         public static double GetCoopStartTime(string contract, string coop)
         {
-            if (Contracts.ContainsKey(contract))
+            if (contracts.ContainsKey(contract))
             {
-                if (Contracts[contract].TimeAccepted.ContainsKey(coop))
+                if (contracts[contract].TimeAccepted.ContainsKey(coop))
                 {
-                    return Contracts[contract].TimeAccepted[coop];
+                    return contracts[contract].TimeAccepted[coop];
                 }
             }
 
@@ -73,11 +92,11 @@
 
         public static double GetExpectedDurationHours(string contract, double rate)
         {
-            if (Contracts.ContainsKey(contract))
+            if (contracts.ContainsKey(contract))
             {
-                double hours = Contracts[contract].TargetEggs / rate;
+                double hours = contracts[contract].TargetEggs / rate;
 
-                hours += Contracts[contract].TokenTimerMinutes switch
+                hours += contracts[contract].TokenTimerMinutes switch
                 {
                     < 30 => 4,
                     < 120 => 6,
@@ -93,13 +112,13 @@
 
         public static double GetCoopEndTime(string contract, string coop, double rate)
         {
-            if (Contracts.ContainsKey(contract))
+            if (contracts.ContainsKey(contract))
             {
-                if (Contracts[contract].TimeAccepted.ContainsKey(coop))
+                if (contracts[contract].TimeAccepted.ContainsKey(coop))
                 {
-                    double hours = Contracts[contract].TargetEggs / rate;
+                    double hours = contracts[contract].TargetEggs / rate;
 
-                    hours += Contracts[contract].TokenTimerMinutes switch
+                    hours += contracts[contract].TokenTimerMinutes switch
                     {
                         < 30 => 4,
                         < 120 => 6,
@@ -107,7 +126,7 @@
                         _ => 10D,
                     };
 
-                    return Contracts[contract].TimeAccepted[coop] + (hours * 3600);
+                    return contracts[contract].TimeAccepted[coop] + (hours * 3600);
                 }
             }
 
@@ -116,9 +135,9 @@
 
         public static double GetContractTarget(string contract)
         {
-            if (Contracts.ContainsKey(contract))
+            if (contracts.ContainsKey(contract))
             {
-                return Contracts[contract].TargetEggs;
+                return contracts[contract].TargetEggs;
             }
 
             return 0;
@@ -126,9 +145,9 @@
 
         public static uint GetContractSize(string contract)
         {
-            if (Contracts.ContainsKey(contract))
+            if (contracts.ContainsKey(contract))
             {
-                return Contracts[contract].CoopSize;
+                return contracts[contract].CoopSize;
             }
 
             return 0;
@@ -136,9 +155,9 @@
 
         public static double GetContractTokenTimer(string contract)
         {
-            if (Contracts.ContainsKey(contract))
+            if (contracts.ContainsKey(contract))
             {
-                return Contracts[contract].TokenTimerMinutes;
+                return contracts[contract].TokenTimerMinutes;
             }
 
             return 0;
@@ -146,25 +165,25 @@
 
         public static List<string> GetSortedContracts()
         {
-            var sortedContracts = from entry in Contracts orderby entry.Value.ExpirationTime descending select entry.Key;
+            var sortedContracts = from entry in contracts orderby entry.Value.TimeAccepted.First().Value descending select entry.Key;
             return sortedContracts.ToList();
         }
 
         public static bool HasCoop(string contract, string coop)
         {
-            if (!Contracts.ContainsKey(contract))
+            if (!contracts.ContainsKey(contract))
             {
                 return false;
             }
 
-            return Contracts[contract].TimeAccepted.ContainsKey(coop);
+            return contracts[contract].TimeAccepted.ContainsKey(coop);
         }
 
         private static void AddDetail(LocalContract localContract, string contractName, string coopName)
         {
             ContractData tempContractData;
 
-            if (!Contracts.ContainsKey(contractName))
+            if (!contracts.ContainsKey(contractName))
             {
                 tempContractData = new ()
                 {
@@ -186,14 +205,35 @@
                 Logger.Info("Length: " + tempContractData.LengthSeconds);
                 Logger.Info("Expiration: " + tempContractData.ExpirationTime);
 
-                Contracts.Add(contractName, tempContractData);
+                contracts.Add(contractName, tempContractData);
             }
 
-            if (!Contracts[contractName].TimeAccepted.ContainsKey(coopName))
+            if (!contracts[contractName].TimeAccepted.ContainsKey(coopName))
             {
-                Contracts[contractName].TimeAccepted.Add(coopName, localContract.TimeAccepted);
+                contracts[contractName].TimeAccepted.Add(coopName, localContract.TimeAccepted);
 
                 Logger.Info("Added Time Accepted Coop " + coopName + " to " + contractName + ": " + localContract.TimeAccepted);
+            }
+        }
+
+        private static void FindDetail(MyContracts myContracts, string contractName, string coopName)
+        {
+            foreach (LocalContract localContract in myContracts.Contracts)
+            {
+                if (localContract.Contract.Identifier == contractName && localContract.CoopIdentifier == coopName)
+                {
+                    AddDetail(localContract, contractName, coopName);
+                    return;
+                }
+            }
+
+            foreach (LocalContract localContract in myContracts.Archive)
+            {
+                if (localContract.Contract.Identifier == contractName && localContract.CoopIdentifier == coopName)
+                {
+                    AddDetail(localContract, contractName, coopName);
+                    return;
+                }
             }
         }
 
