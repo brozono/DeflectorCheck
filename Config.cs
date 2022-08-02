@@ -14,6 +14,7 @@
         private static string groupName;
         private static string eggIncID;
         private static Dictionary<string, List<string>> excludedCoops;
+        private static bool slow;
 
         public static Dictionary<string, List<string>> Coops
         {
@@ -65,6 +66,21 @@
             return false;
         }
 
+        public static int TokenMultiplier()
+        {
+            if (slow)
+            {
+                return 2;
+            }
+
+            return 1;
+        }
+
+        public static string GetCoopFolder()
+        {
+            return RoamingFolder + GroupName + @"\";
+        }
+
         public static void ParseConfig(string commandLineFileName)
         {
             coops = new Dictionary<string, List<string>>();
@@ -95,6 +111,7 @@
                     groupName = configData.GroupName;
                     eggIncID = configData.EggIncID;
                     excludedCoops = configData.ExcludedCoops;
+                    slow = configData.Slow;
                 }
                 catch (Exception e)
                 {
@@ -122,6 +139,8 @@
             public string EggIncID { get; set; }
 
             public Dictionary<string, List<string>> ExcludedCoops { get; set; }
+
+            public bool Slow { get; set; }
         }
     }
 }
