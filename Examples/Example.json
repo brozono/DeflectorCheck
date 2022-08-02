@@ -1,0 +1,48 @@
+{
+  "Coops":
+  {
+    "contract-id-1" :
+      [
+        "coop-id-a"
+      ],
+    "contract-id-2" :
+      [
+        "coop-id-a",
+        "coop-id-b"
+      ],
+    "contract-id-3" :
+      [
+        "coop-id-a",
+        "coop-id-b",
+        "coop-id-c",
+        "coop-id-d",
+        "coop-id-e",
+        "coop-id-f"
+      ]
+  },
+  "GroupMembers" :
+  [
+    "MemberA_IGN",
+    "MemberB_IGN",
+    "MemberC_IGN",
+    "MemberD_IGN",
+    "MemberE_IGN",
+    "MemberF_IGN"
+  ],
+  "GroupName" : "Group-Name",
+  "Comment EID" : "The EID is necessary to make coop status requests",
+  "EggIncID": "EI1234567891234567",
+  "Comment Excluded" : "The following is for any coops you want to exclude from summary",
+  "ExcludedCoops":
+  {
+   "contract-id-Z" :
+    [
+      "coop-id_A"
+    ]
+  },
+  "Comment FuzzyMappings" : "If members change IGN then you can match them",
+  "FuzzyMappings" :
+  {
+    "NameFrom" : "NameTo"
+  }
+}
