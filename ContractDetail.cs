@@ -166,7 +166,28 @@
         public static List<string> GetSortedContracts()
         {
             var sortedContracts = from entry in contracts orderby entry.Value.TimeAccepted.First().Value descending select entry.Key;
-            return sortedContracts.ToList();
+
+            var list = sortedContracts.ToList();
+
+            foreach (string contract in sortedContracts.ToList())
+            {
+                bool allExcluded = true;
+                foreach (string coop in contracts[contract].TimeAccepted.Keys)
+                {
+                    if (!Config.IsExcluded(contract, coop))
+                    {
+                        allExcluded = false;
+                        break;
+                    }
+                }
+
+                if (allExcluded)
+                {
+                    list.Remove(contract);
+                }
+            }
+
+            return list;
         }
 
         public static bool HasCoop(string contract, string coop)
