@@ -84,11 +84,11 @@
                     < 240 => 8,
                     _ => 10D,
                 };
-                return hours;
+                return Config.TokenMultiplier() * hours;
             }
 
             // Default
-            return 24;
+            return Config.TokenMultiplier() * 24;
         }
 
         public static double GetCoopEndTime(string contract, string coop, double rate)
