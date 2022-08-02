@@ -6,7 +6,7 @@ At this time Windows only.
 
 ## Setup
 
-Create a config file following the example: <TODO>Example<TODO>
+Create a config file following the example: [Example.json](https://github.com/brozono/DeflectorCheck/blob/main/Examples/Example.json)
 
 ## Output
 
@@ -29,15 +29,15 @@ There is a settings sheet with the ability to set the following parameters.
 
 These parameters are used in the Summary sheet only.
 - Personal Ratio Pass Threshold
--- Indicates the percentage of time a deflector was equipped
+  - Indicates the percentage of time a deflector was equipped
 - Coop Ratio Pass Threshold
--- Indicates the percentage of time a deflector was equipped relative to others in your coop (note 100% would be the average)
+  - Indicates the percentage of time a deflector was equipped relative to others in your coop (note 100% would be the average)
 - Contract Ratio Pass Threshold
--- Indicates the percentage of time a deflector was equipped relative to others in your group across all coops for that contract (note 100% would be the average)
+  - Indicates the percentage of time a deflector was equipped relative to others in your group across all coops for that contract (note 100% would be the average)
 
 This parameter is used on all sheets
 - Max Contract Size Threshold
--- This is the size above which a contract will not be used in average calculations. To be used in case large contracts are outliers for deflector use.
+  - This is the size above which a contract will not be used in average calculations. To be used in case large contracts are outliers for deflector use.
 
 ### Summary Sheet
 
