@@ -33,8 +33,6 @@
             Excel.Worksheet coop = AddSheet(workbook, "Coop Ratio", ratio);
             Excel.Worksheet contract = AddSheet(workbook, "Contract Ratio", coop);
 
-            List<string> contractNames = ContractDetail.GetSortedContracts();
-
             int headerRow = 2;
             int headerCol = 2;
 
